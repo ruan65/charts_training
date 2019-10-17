@@ -64,14 +64,28 @@ class _HomePageState extends State<HomePage> {
                           _seriesPieData,
                           animate: true,
                           animationDuration: Duration(seconds: 1),
+                          behaviors: [
+                            charts.DatumLegend(
+                                outsideJustification:
+                                    charts.OutsideJustification.end,
+                                horizontalFirst: false,
+                                desiredMaxRows: 2,
+                                cellPadding:
+                                    EdgeInsets.only(right: 20, bottom: 4),
+                                entryTextStyle: charts.TextStyleSpec(
+                                  color: charts
+                                      .MaterialPalette.indigo.shadeDefault,
+                                  fontFamily: 'Georgia',
+                                  fontSize: 11,
+                                ))
+                          ],
                           defaultRenderer: charts.ArcRendererConfig(
-                            arcWidth: 100,
-                            arcRendererDecorators: [
-                              charts.ArcLabelDecorator(
-                                labelPosition: charts.ArcLabelPosition.inside
-                              )
-                            ]
-                          ),
+                              arcWidth: 100,
+                              arcRendererDecorators: [
+                                charts.ArcLabelDecorator(
+                                    labelPosition:
+                                        charts.ArcLabelPosition.inside)
+                              ]),
                         ),
                       ),
                     ],
