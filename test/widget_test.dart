@@ -5,4 +5,5 @@ import 'package:charts_training/main.dart';
 
 void main() {
 
+  test('hello', () {});
 }

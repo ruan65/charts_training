@@ -1,5 +1,8 @@
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'data.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,6 +10,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<charts.Series<Pollution, String>> _seriesData;
+  List<charts.Series<Task, String>> _seriesPieData;
+  List<charts.Series<Sales, int>> _seriesLineData;
+
+  @override
+  void initState() {
+    super.initState();
+    _seriesData = List<charts.Series<Pollution, String>>();
+    _seriesPieData = List<charts.Series<Task, String>>();
+    _seriesLineData = List<charts.Series<Sales, int>>();
+    _generateData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,14 +43,58 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [],
+          body: TabBarView(children: [
+            Container(),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Container(
+                child: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Time spent on daily tasks',
+                        style: TextStyle(
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Expanded(
+                        child: charts.PieChart(
+                          _seriesPieData,
+                          animate: true,
+                          animationDuration: Duration(seconds: 1),
+                          defaultRenderer: charts.ArcRendererConfig(
+                            arcWidth: 100,
+                            arcRendererDecorators: [
+                              charts.ArcLabelDecorator(
+                                labelPosition: charts.ArcLabelPosition.inside
+                              )
+                            ]
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+            Container(),
+          ]),
         ),
       ),
+    );
+  }
+
+  void _generateData() {
+    _seriesPieData.add(
+      charts.Series(
+          data: piedata,
+          domainFn: (task, i) => task.task,
+          measureFn: (task, i) => task.taskvalue,
+          colorFn: (task, i) => charts.ColorUtil.fromDartColor(task.colorval),
+          id: 'Daily Task',
+          labelAccessorFn: (Task row, i) => '${row.taskvalue}'),
     );
   }
 }
