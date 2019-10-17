@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showSemanticsDebugger: false,
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -44,7 +45,31 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           body: TabBarView(children: [
-            Container(),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                child: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'SO₂ emissions, by world region (in million tonnes)',
+                        style: TextStyle(
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: charts.BarChart(
+                          _seriesData,
+                          animate: true,
+                          barGroupingType: charts.BarGroupingType.grouped,
+                          //behaviors: [new charts.SeriesLegend()],
+                          animationDuration: Duration(seconds: 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(8),
               child: Container(
@@ -93,7 +118,47 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            Container(),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                child: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Sales for the first 5 years',
+                        style: TextStyle(
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: charts.LineChart(_seriesLineData,
+                            defaultRenderer: new charts.LineRendererConfig(
+                                includeArea: true, stacked: true),
+                            animate: true,
+                            animationDuration: Duration(seconds: 1),
+                            behaviors: [
+                              new charts.ChartTitle('Years',
+                                  behaviorPosition:
+                                      charts.BehaviorPosition.bottom,
+                                  titleOutsideJustification: charts
+                                      .OutsideJustification.middleDrawArea),
+                              new charts.ChartTitle('Sales',
+                                  behaviorPosition:
+                                      charts.BehaviorPosition.start,
+                                  titleOutsideJustification: charts
+                                      .OutsideJustification.middleDrawArea),
+                              new charts.ChartTitle(
+                                'Departments',
+                                behaviorPosition: charts.BehaviorPosition.end,
+                                titleOutsideJustification:
+                                    charts.OutsideJustification.middleDrawArea,
+                              )
+                            ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ]),
         ),
       ),
@@ -109,6 +174,71 @@ class _HomePageState extends State<HomePage> {
           colorFn: (task, i) => charts.ColorUtil.fromDartColor(task.colorval),
           id: 'Daily Task',
           labelAccessorFn: (Task row, i) => '${row.taskvalue}'),
+    );
+
+    _seriesData.add(
+      charts.Series(
+        domainFn: (Pollution pollution, _) => pollution.place,
+        measureFn: (Pollution pollution, _) => pollution.quantity,
+        id: '2017',
+        data: data1,
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Pollution pollution, _) =>
+            charts.ColorUtil.fromDartColor(Color(0xff990099)),
+      ),
+    );
+
+    _seriesData.add(
+      charts.Series(
+        domainFn: (Pollution pollution, _) => pollution.place,
+        measureFn: (Pollution pollution, _) => pollution.quantity,
+        id: '2018',
+        data: data2,
+        fillPatternFn: (_, __) => charts.FillPatternType.forwardHatch,
+        fillColorFn: (Pollution pollution, _) =>
+            charts.ColorUtil.fromDartColor(Color(0xff109618)),
+      ),
+    );
+
+    _seriesData.add(
+      charts.Series(
+        domainFn: (Pollution pollution, _) => pollution.place,
+        measureFn: (Pollution pollution, _) => pollution.quantity,
+        id: '2019',
+        data: data3,
+        fillPatternFn: (_, __) => charts.FillPatternType.solid,
+        fillColorFn: (Pollution pollution, _) =>
+            charts.ColorUtil.fromDartColor(Color(0xffff9900)),
+      ),
+    );
+
+    _seriesLineData.add(
+      charts.Series(
+        colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xff990099)),
+        id: 'Sailes',
+        data: linesalesdata,
+        domainFn: (Sales sales, _) => sales.yearval,
+        measureFn: (Sales sales, _) => sales.salesval,
+      ),
+    );
+
+    _seriesLineData.add(
+      charts.Series(
+        colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xff109618)),
+        id: 'Sailes',
+        data: linesalesdata1,
+        domainFn: (Sales sales, _) => sales.yearval,
+        measureFn: (Sales sales, _) => sales.salesval,
+      ),
+    );
+    _seriesLineData.add(
+      charts.Series(
+        colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xffff9900)),
+        id: 'Sailes',
+        data: linesalesdata2,
+        domainFn: (Sales sales, _) => sales.yearval,
+        measureFn: (Sales sales, _) => sales.salesval,
+      ),
     );
   }
 }
